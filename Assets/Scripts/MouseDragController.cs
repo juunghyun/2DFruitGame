@@ -1,24 +1,28 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class MouseDragController : MonoBehaviour
 {
-   [SerializeField] private AppleSpawner appleSpawner;
-   [SerializeField] private RectTransform dragRectangle;
+    [SerializeField] private AppleSpawner appleSpawner;
+    [SerializeField] private RectTransform dragRectangle;
 
-   private Rect dragRect;
-   private Vector2  start = Vector2.zero;
-   private Vector2 end = Vector2.zero;
 
-   private void Awake()
-   {
+    private Rect dragRect;
+    private Vector2 start = Vector2.zero;
+    private Vector2 end = Vector2.zero;
+    private int sum = 0;
+    private List<Apple> selectedAppleList = new List<Apple>();
+
+    private void Awake()
+    {
     dragRect = new Rect();
 
     //start, end의 디폴트값이 0, 0이므로 드래그 영역이 화면에 보이지 않도록 설정
     DrawDragRectangle();
-   }
+    }
 
-   private void Update()
-   {
+    private void Update()
+    {
         if (Input.GetMouseButtonDown(0)) //좌클릭
         {
             start = Input.mousePosition;
@@ -34,19 +38,35 @@ public class MouseDragController : MonoBehaviour
         }
         if(Input.GetMouseButtonUp(0))//드래그 종료
         {
+            Debug.Log($"Sum : {sum}");
+            if(sum == 10)
+            {
+                Debug.Log("10 완성");
+                foreach ( Apple apple in selectedAppleList)
+                {
+                    appleSpawner.DestroyApple(apple);
+                }
+            }
+            else
+            {
+                foreach(Apple apple in selectedAppleList)
+                {
+                    apple.OnDeselected();
+                }
+            }
             start = end = Vector2.zero; //다시 0,0으로 바꿔서 드래그 범위 안보이도록
             DrawDragRectangle();
         }
-   }
+    }
 
-   private void DrawDragRectangle()
-   {
+    private void DrawDragRectangle()
+    {
         dragRectangle.position = (start + end) * 0.5f;
         dragRectangle.sizeDelta = new Vector2(Mathf.Abs(start.x - end.x), Mathf.Abs(start.y - end.y));
-   }
+    }
 
-   private void CalculateDragRect()
-   {
+    private void CalculateDragRect()
+    {
         if(Input.mousePosition.x<start.x)
         {
             dragRect.xMin = Input.mousePosition.x;
@@ -67,20 +87,26 @@ public class MouseDragController : MonoBehaviour
             dragRect.yMin = start.y;
             dragRect.yMax = Input.mousePosition.y;
         }
-   }
+    }
 
-   private void SelectApples()
-   {
+    private void SelectApples()
+    {
+        sum = 0;
+        selectedAppleList.Clear();
+
         foreach (Apple apple in appleSpawner.AppleList)
         {
+            //사과의 중심점을 드래그해야함함
             if(dragRect.Contains(apple.Position))
             {
                 apple.OnSelected();
+                selectedAppleList.Add(apple);
+                sum += apple.Number;
             }else
             {
                 apple.OnDeselected();
             }
         }
-   }
+    }
 
 }

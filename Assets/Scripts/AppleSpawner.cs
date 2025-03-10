@@ -8,7 +8,7 @@ public class AppleSpawner : MonoBehaviour
     private readonly int width = 17, height = 10;
     private readonly int spacing = 20;
     private List<Apple> appleList = new List<Apple>();
-    public List<Apple> AppleList => appleList;
+    public List<Apple> AppleList => appleList; //AppleList 프로퍼티 : 읽기 전용! 외부에서 변경은 못하고 조회만 가능
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class AppleSpawner : MonoBehaviour
 
         for(int y = 0; y<height; y++){
             for(int x = 0; x<width; x++){
-                GameObject clone = Instantiate(applePrefab, appleParent);
+                GameObject clone = Instantiate(applePrefab, appleParent); //생성하는함수(생성할 프리팹, 부모 오브젝트)
                 RectTransform rect = clone.GetComponent<RectTransform>();
 
                 float px = (-width * 0.5f + 0.5f + x) * size.x;
@@ -48,5 +48,11 @@ public class AppleSpawner : MonoBehaviour
         Debug.Log($"AppleSpawner::SpawnApples() : {sum}");
     }
 
-    
+    public void DestroyApple(Apple removeItem)
+    {
+        //인자로 받아온 사과를 appleList에서 찾아 삭제
+        appleList.Remove(removeItem);
+        //Destroy로 해당 오브젝트 파괴
+        Destroy(removeItem.gameObject);
+    }
 }

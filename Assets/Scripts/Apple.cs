@@ -5,7 +5,7 @@ using System;
 
 public class Apple : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI textNumber;
+    [SerializeField] private TextMeshProUGUI textNumber;
     private Image image;
     private RectTransform rect;
 
@@ -21,7 +21,7 @@ public class Apple : MonoBehaviour
 
     }
     
-    public Vector3 position => rect.position;
+    public Vector3 Position => rect.position;
     private void Awake()
     {
         image = GetComponent<Image>();
@@ -30,7 +30,7 @@ public class Apple : MonoBehaviour
 
     public void OnSelected()
     {
-        image.color = Color. blue;
+        image.color = Color.blue;
     }
     public void OnDeselected()
     {
