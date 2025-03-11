@@ -3,26 +3,34 @@ using System.Collections.Generic;
 
 public class MouseDragController : MonoBehaviour
 {
+    [SerializeField] private GameController gameController;
     [SerializeField] private AppleSpawner appleSpawner;
     [SerializeField] private RectTransform dragRectangle;
+    
 
 
+    private int sum = 0;
     private Rect dragRect;
     private Vector2 start = Vector2.zero;
     private Vector2 end = Vector2.zero;
-    private int sum = 0;
+    private AudioSource audioSource;
     private List<Apple> selectedAppleList = new List<Apple>();
 
     private void Awake()
     {
-    dragRect = new Rect();
+        dragRect = new Rect();
+        audioSource = GetComponent<AudioSource>();
 
-    //start, end의 디폴트값이 0, 0이므로 드래그 영역이 화면에 보이지 않도록 설정
-    DrawDragRectangle();
+        //start, end의 디폴트값이 0, 0이므로 드래그 영역이 화면에 보이지 않도록 설정
+        DrawDragRectangle();
     }
 
     private void Update()
     {
+        if(gameController.IsGameStart == false)
+        {
+            return;
+        }
         if (Input.GetMouseButtonDown(0)) //좌클릭
         {
             start = Input.mousePosition;
@@ -38,14 +46,17 @@ public class MouseDragController : MonoBehaviour
         }
         if(Input.GetMouseButtonUp(0))//드래그 종료
         {
-            Debug.Log($"Sum : {sum}");
-            if(sum == 10)
+            if(sum == 10 || sum == 20)
             {
-                Debug.Log("10 완성");
+                int score = 0;
                 foreach ( Apple apple in selectedAppleList)
                 {
+                    score ++;
                     appleSpawner.DestroyApple(apple);
                 }
+                
+                audioSource.Play();
+                gameController.IncreaseScore(score);
             }
             else
             {
