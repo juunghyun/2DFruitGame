@@ -5,7 +5,7 @@ public class AppleSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject applePrefab;
     [SerializeField] private Transform appleParent;
-    private readonly int width = 17, height = 10;
+    private readonly int width = 17, height = 10; //사과를 배치하는데 가로와 세로에 넣을 사과 개수
     private readonly int spacing = 20;
     private List<Apple> appleList = new List<Apple>();
     public List<Apple> AppleList => appleList; //AppleList 프로퍼티 : 읽기 전용! 외부에서 변경은 못하고 조회만 가능
